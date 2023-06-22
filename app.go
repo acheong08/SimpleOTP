@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/acheong08/SimpleOTP/internal/database"
 )
 
 // App struct
@@ -24,4 +26,9 @@ func (a *App) startup(ctx context.Context) {
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
+}
+
+// Login sets the password for the encrypted database
+func (a *App) Login(password string) {
+	database.SetPassword(password)
 }
