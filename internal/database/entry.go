@@ -6,6 +6,8 @@ import (
 	"errors"
 	"os"
 	"strings"
+
+	"github.com/acheong08/SimpleOTP/internal/constants"
 )
 
 type Entry struct {
@@ -82,7 +84,7 @@ func (e *Entries) List() ([]string, error) {
 
 func (e *Entries) Save() error {
 	// Gob encode the entries
-	file, err := os.OpenFile("entries.gob", os.O_RDWR|os.O_CREATE, 0644)
+	file, err := os.OpenFile(constants.SaveFile, os.O_RDWR|os.O_CREATE, 0644)
 	if err != nil {
 		return err
 	}
@@ -96,7 +98,7 @@ func (e *Entries) Save() error {
 }
 
 func (e *Entries) Load() error {
-	file, err := os.Open("entries.gob")
+	file, err := os.Open(constants.SaveFile)
 	if err != nil {
 		return err
 	}
