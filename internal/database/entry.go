@@ -2,15 +2,8 @@
 package database
 
 import (
-	"crypto/aes"
-	"crypto/cipher"
-	"crypto/rand"
-	"crypto/sha512"
-	"encoding/base64"
 	"encoding/gob"
-	"encoding/json"
 	"errors"
-	"io"
 	"os"
 	"strings"
 )
@@ -22,77 +15,13 @@ type Entry struct {
 	Secret      string `json:"secret"`
 }
 
-// Marshals the JSON, encrypts it, and returns a base64 encoded string
-func (e *Entry) Encrypt() string {
-	plaintext, err := json.Marshal(e)
-	if err != nil {
-		panic(err)
-	}
-
-	block, err := aes.NewCipher(key.Key)
-	if err != nil {
-		panic(err)
-	}
-
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		panic(err)
-	}
-
-	nonce := make([]byte, aesGCM.NonceSize())
-	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		panic(err)
-	}
-
-	ciphertext := aesGCM.Seal(nil, nonce, plaintext, nil)
-	encryptedData := append(nonce, ciphertext...)
-	return base64.StdEncoding.EncodeToString(encryptedData)
-}
-
-// Decrypts a base64 encoded and encrypted string, and unmarshals it
-func Decrypt(entry string) (*Entry, error) {
-	encryptedData, err := base64.StdEncoding.DecodeString(entry)
-	if err != nil {
-		return nil, errors.New("failed to decode base64")
-	}
-
-	block, err := aes.NewCipher(key.Key)
-	if err != nil {
-		panic(err)
-	}
-
-	aesGCM, err := cipher.NewGCM(block)
-	if err != nil {
-		panic(err)
-	}
-
-	nonceSize := aesGCM.NonceSize()
-	if len(encryptedData) < nonceSize {
-		return nil, errors.New("invalid ciphertext")
-	}
-
-	nonce, ciphertext := encryptedData[:nonceSize], encryptedData[nonceSize:]
-	plaintext, err := aesGCM.Open(nil, nonce, ciphertext, nil)
-	if err != nil {
-		return nil, errors.New("failed to decrypt")
-	}
-
-	var entryData Entry
-	err = json.Unmarshal(plaintext, &entryData)
-	if err != nil {
-		panic(err)
-	}
-
-	return &entryData, nil
-}
-
 type Entries struct {
 	Entries map[string]string `json:"entries"` // Key is the hashed name, value is the base64 encoded encrypted entry
 }
 
 func (e *Entries) Get(name string) (*Entry, error) {
 	// Hash the name
-	hashedName := sha512.Sum512([]byte(name))
+	hashedName := hash(name)
 	// Get the entry from the map
 	encryptedEntry, ok := e.Entries[string(hashedName[:])]
 	if !ok {
@@ -114,7 +43,7 @@ func (e *Entries) Search(name string) ([]string, error) {
 	var matches []string
 	for _, n := range names {
 		// Check if name is a substring of n
-		if strings.Contains(n, name) {
+		if strings.Contains(strings.ToLower(n), strings.ToLower(name)) {
 			matches = append(matches, n)
 		}
 	}
@@ -123,14 +52,15 @@ func (e *Entries) Search(name string) ([]string, error) {
 
 func (e *Entries) Add(entry Entry) {
 	// Hash the name
-	hashedName := sha512.Sum512([]byte(entry.Name))
+	hashedName := hash(entry.Name)
 	// Add the entry to the map
-	e.Entries[string(hashedName[:])] = entry.Encrypt()
+	e.Entries[string(hashedName[:])] = Encrypt(&entry)
+
 }
 
 func (e *Entries) Remove(name string) {
 	// Hash the name
-	hashedName := sha512.Sum512([]byte(name))
+	hashedName := hash(name)
 	// Remove the entry from the map
 	delete(e.Entries, string(hashedName[:]))
 }
@@ -138,7 +68,7 @@ func (e *Entries) Remove(name string) {
 func (e *Entries) List() ([]string, error) {
 	names := make([]string, len(e.Entries))
 	i := 0
-	for entry := range e.Entries {
+	for _, entry := range e.Entries {
 		decryptedEntry, err := Decrypt(entry)
 		if err != nil {
 			return nil, err
@@ -159,6 +89,20 @@ func (e *Entries) Save() error {
 	defer file.Close()
 	encoder := gob.NewEncoder(file)
 	err = encoder.Encode(e)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (e *Entries) Load() error {
+	file, err := os.Open("entries.gob")
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	decoder := gob.NewDecoder(file)
+	err = decoder.Decode(e)
 	if err != nil {
 		return err
 	}
