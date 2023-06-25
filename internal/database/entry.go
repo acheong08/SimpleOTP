@@ -12,6 +12,7 @@ import (
 	"errors"
 	"io"
 	"os"
+	"strings"
 )
 
 type Entry struct {
@@ -89,21 +90,35 @@ type Entries struct {
 	Entries map[string]string `json:"entries"` // Key is the hashed name, value is the base64 encoded encrypted entry
 }
 
-func (e *Entries) Search(name string) (Entry, error) {
+func (e *Entries) Get(name string) (*Entry, error) {
 	// Hash the name
 	hashedName := sha512.Sum512([]byte(name))
-	// Search the map for the hashed name
-	// If it doesn't exist, return an error
-
-	if entry, ok := e.Entries[string(hashedName[:])]; ok {
-		decryptedEntry, err := Decrypt(entry)
-		if err != nil {
-			return Entry{}, err
-		}
-		return *decryptedEntry, nil
-	} else {
-		return Entry{}, errors.New("entry not found")
+	// Get the entry from the map
+	encryptedEntry, ok := e.Entries[string(hashedName[:])]
+	if !ok {
+		return nil, errors.New("entry not found")
 	}
+	// Decrypt the entry
+	decryptedEntry, err := Decrypt(encryptedEntry)
+	if err != nil {
+		return nil, err
+	}
+	return decryptedEntry, nil
+}
+
+func (e *Entries) Search(name string) ([]string, error) {
+	names, err := e.List()
+	if err != nil {
+		return nil, err
+	}
+	var matches []string
+	for _, n := range names {
+		// Check if name is a substring of n
+		if strings.Contains(n, name) {
+			matches = append(matches, n)
+		}
+	}
+	return matches, nil
 }
 
 func (e *Entries) Add(entry Entry) {
