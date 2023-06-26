@@ -1,7 +1,6 @@
 package database_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/acheong08/SimpleOTP/internal/database"
@@ -245,11 +244,5 @@ func TestEntriesSave(t *testing.T) {
 		if encrypted != savedEncrypted {
 			t.Errorf("Saved entry does not match original entry: %s", name)
 		}
-	}
-
-	// Remove the saved file
-	err = os.Remove("entries.gob")
-	if err != nil {
-		t.Errorf("Failed to remove saved file: %v", err)
 	}
 }
