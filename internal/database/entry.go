@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/acheong08/SimpleOTP/internal/constants"
+	"github.com/acheong08/SimpleOTP/internal/utilities"
 )
 
 type Entry struct {
@@ -21,7 +22,7 @@ type Entries struct {
 
 func (e *Entries) Get(name string) (*Entry, error) {
 	// Hash the name
-	hashedName := hash(name)
+	hashedName := utilities.Hash(name)
 	// Get the entry from the map
 	encryptedEntry, ok := e.Entries[string(hashedName[:])]
 	if !ok {
@@ -29,7 +30,7 @@ func (e *Entries) Get(name string) (*Entry, error) {
 	}
 	// Decrypt the entry
 	var decryptedEntry Entry = Entry{}
-	err := Decrypt(encryptedEntry, &decryptedEntry)
+	err := utilities.Decrypt(encryptedEntry, key.Key[:], &decryptedEntry)
 	if err != nil {
 		return nil, err
 	}
@@ -53,15 +54,15 @@ func (e *Entries) Search(name string) ([]string, error) {
 
 func (e *Entries) Add(entry Entry) {
 	// Hash the name
-	hashedName := hash(entry.Name)
+	hashedName := utilities.Hash(entry.Name)
 	// Add the entry to the map
-	e.Entries[string(hashedName[:])] = Encrypt(&entry)
+	e.Entries[string(hashedName[:])] = utilities.Encrypt(&entry, key.Key[:])
 
 }
 
 func (e *Entries) Remove(name string) {
 	// Hash the name
-	hashedName := hash(name)
+	hashedName := utilities.Hash(name)
 	// Remove the entry from the map
 	delete(e.Entries, string(hashedName[:]))
 }
@@ -71,7 +72,7 @@ func (e *Entries) List() ([]string, error) {
 	i := 0
 	for _, entry := range e.Entries {
 		var decryptedEntry Entry = Entry{}
-		err := Decrypt(entry, &decryptedEntry)
+		err := utilities.Decrypt(entry, key.Key[:], &decryptedEntry)
 		if err != nil {
 			return nil, err
 		}
@@ -83,9 +84,9 @@ func (e *Entries) List() ([]string, error) {
 }
 
 func (e *Entries) Save() error {
-	return SaveFile(e, constants.SaveFile)
+	return utilities.SaveFile(e, constants.SaveFile)
 }
 
 func (e *Entries) Load() error {
-	return LoadFile(e, constants.SaveFile)
+	return utilities.LoadFile(e, constants.SaveFile)
 }

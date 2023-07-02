@@ -1,13 +1,16 @@
 package database_test
 
 import (
+	"crypto/sha256"
 	"testing"
 
 	"github.com/acheong08/SimpleOTP/internal/database"
+	"github.com/acheong08/SimpleOTP/internal/utilities"
 )
 
 func TestEntryEncryptDecrypt(t *testing.T) {
-	database.SetPassword("01234567890123456789012345678901")
+
+	key := sha256.Sum256([]byte("somepassword"))
 
 	// Create a test entry
 	entry := &database.Entry{
@@ -18,11 +21,11 @@ func TestEntryEncryptDecrypt(t *testing.T) {
 	}
 
 	// Encrypt the entry
-	encrypted := database.Encrypt(entry)
+	encrypted := utilities.Encrypt(entry, key[:])
 
 	// Decrypt the encrypted entry
 	var decrypted database.Entry = database.Entry{}
-	err := database.Decrypt(encrypted, &decrypted)
+	err := utilities.Decrypt(encrypted, key[:], &decrypted)
 	if err != nil {
 		t.Errorf("Failed to decrypt entry: %v", err)
 	}

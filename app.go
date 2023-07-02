@@ -30,6 +30,5 @@ func (a *App) Greet(name string) string {
 
 // Login sets the password for the encrypted database
 func (a *App) Login(password string) string {
-	database.SetPassword(password)
-	return "success"
+	return database.SetPassword(password)
 }

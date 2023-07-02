@@ -1,4 +1,4 @@
-package database
+package utilities
 
 import (
 	"crypto/aes"
@@ -12,16 +12,18 @@ import (
 	"errors"
 	"io"
 	"os"
+
+	customerrors "github.com/acheong08/SimpleOTP/internal/errors"
 )
 
 // Marshals the JSON, encrypts it, and returns a base64 encoded string
-func Encrypt(e any) string {
+func Encrypt(e any, key []byte) string {
 	plaintext, err := json.Marshal(e)
 	if err != nil {
 		panic(err)
 	}
 
-	block, err := aes.NewCipher(key.Key)
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
 	}
@@ -42,13 +44,13 @@ func Encrypt(e any) string {
 }
 
 // Decrypts a base64 encoded and encrypted string, and unmarshals it
-func Decrypt(data string, obj any) error {
+func Decrypt(data string, key []byte, obj any) error {
 	encryptedData, err := base64.StdEncoding.DecodeString(data)
 	if err != nil {
 		return errors.New("failed to decode base64")
 	}
 
-	block, err := aes.NewCipher(key.Key)
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
 	}
@@ -77,7 +79,7 @@ func Decrypt(data string, obj any) error {
 	return nil
 }
 
-func hash(str string) string {
+func Hash(str string) string {
 	hashedName := sha512.Sum512([]byte(str))
 	// Hex
 	return hex.EncodeToString(hashedName[:])
@@ -100,7 +102,7 @@ func SaveFile(obj any, filePath string) error {
 func LoadFile(obj any, filePath string) error {
 	file, err := os.Open(filePath)
 	if err != nil {
-		return err
+		return errors.New(customerrors.FILENOTEXIST)
 	}
 	defer file.Close()
 	decoder := gob.NewDecoder(file)
