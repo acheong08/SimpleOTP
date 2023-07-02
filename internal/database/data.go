@@ -6,7 +6,7 @@ import (
 )
 
 type fileStore struct {
-	PasswordHash PasswordHash
+	PasswordHash string
 	Entries      Entries
 }
 
@@ -19,6 +19,5 @@ func (e *fileStore) Load() error {
 }
 
 var FileStore fileStore = fileStore{
-	PasswordHash: PasswordHash{},
-	Entries:      Entries{},
+	Entries: Entries{},
 }

@@ -23,20 +23,15 @@ func SetPassword(pwd string) string {
 	}
 	if password_hash_loaded {
 		// Compare the hashes
-		if utilities.Hash(pwd) != FileStore.PasswordHash.Hash {
+		if utilities.Hash(pwd) != FileStore.PasswordHash {
 			return "failed"
 		}
 	} else {
 		// Save the hash
-		FileStore.PasswordHash.Hash = utilities.Hash(pwd)
+		FileStore.PasswordHash = utilities.Hash(pwd)
 		password_hash_loaded = true
 	}
 	return "success"
-}
-
-// Salt and hash are hex encoded
-type PasswordHash struct {
-	Hash string `json:"hash"`
 }
 
 var key Password
