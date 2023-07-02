@@ -5,7 +5,6 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/acheong08/SimpleOTP/internal/constants"
 	"github.com/acheong08/SimpleOTP/internal/utilities"
 )
 
@@ -81,12 +80,4 @@ func (e *Entries) List() ([]string, error) {
 	}
 	return names, nil
 
-}
-
-func (e *Entries) Save() error {
-	return utilities.SaveFile(e, constants.SaveFile)
-}
-
-func (e *Entries) Load() error {
-	return utilities.LoadFile(e, constants.SaveFile)
 }

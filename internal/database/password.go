@@ -4,8 +4,6 @@ package database
 import (
 	"crypto/sha256"
 
-	"github.com/acheong08/SimpleOTP/internal/constants"
-	customerrors "github.com/acheong08/SimpleOTP/internal/errors"
 	"github.com/acheong08/SimpleOTP/internal/utilities"
 )
 
@@ -25,16 +23,13 @@ func SetPassword(pwd string) string {
 	}
 	if password_hash_loaded {
 		// Compare the hashes
-		if utilities.Hash(pwd) != password_hash.Hash {
+		if utilities.Hash(pwd) != FileStore.PasswordHash.Hash {
 			return "failed"
 		}
 	} else {
 		// Save the hash
-		password_hash.Hash = utilities.Hash(pwd)
-		err := password_hash.Save()
-		if err != nil {
-			panic(err)
-		}
+		FileStore.PasswordHash.Hash = utilities.Hash(pwd)
+		password_hash_loaded = true
 	}
 	return "success"
 }
@@ -44,25 +39,11 @@ type PasswordHash struct {
 	Hash string `json:"hash"`
 }
 
-func (p *PasswordHash) Save() error {
-	return utilities.SaveFile(p, constants.HashFile)
-}
-
-func (p *PasswordHash) Load() error {
-	return utilities.LoadFile(p, constants.HashFile)
-}
-
 var key Password
-var password_hash *PasswordHash = &PasswordHash{}
 var password_hash_loaded bool = false
 
 func init() {
 	// Load the password hash
-	err := password_hash.Load()
-	if err != nil {
-		if err.Error() != customerrors.FILENOTEXIST {
-			panic(err)
-		}
-	}
-	password_hash_loaded = true
+	err := FileStore.Load()
+	password_hash_loaded = err == nil
 }

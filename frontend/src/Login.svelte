@@ -6,8 +6,11 @@
 
   function login(): void {
     Login(password).then((result: string) => {
+      console.log(result);
       if (result == "success") {
         page_state = "dashboard";
+      } else {
+        alert("Incorrect password");
       }
     });
   }

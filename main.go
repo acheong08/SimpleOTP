@@ -25,6 +25,7 @@ func main() {
 		},
 		BackgroundColour: options.NewRGB(0, 0, 0),
 		OnStartup:        app.startup,
+		OnShutdown:       app.shutdown,
 		Bind: []interface{}{
 			app,
 		},
