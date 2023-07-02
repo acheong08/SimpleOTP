@@ -2,9 +2,7 @@
 package database
 
 import (
-	"encoding/gob"
 	"errors"
-	"os"
 	"strings"
 
 	"github.com/acheong08/SimpleOTP/internal/constants"
@@ -30,11 +28,12 @@ func (e *Entries) Get(name string) (*Entry, error) {
 		return nil, errors.New("entry not found")
 	}
 	// Decrypt the entry
-	decryptedEntry, err := Decrypt(encryptedEntry)
+	var decryptedEntry Entry = Entry{}
+	err := Decrypt(encryptedEntry, &decryptedEntry)
 	if err != nil {
 		return nil, err
 	}
-	return decryptedEntry, nil
+	return &decryptedEntry, nil
 }
 
 func (e *Entries) Search(name string) ([]string, error) {
@@ -71,7 +70,8 @@ func (e *Entries) List() ([]string, error) {
 	names := make([]string, len(e.Entries))
 	i := 0
 	for _, entry := range e.Entries {
-		decryptedEntry, err := Decrypt(entry)
+		var decryptedEntry Entry = Entry{}
+		err := Decrypt(entry, &decryptedEntry)
 		if err != nil {
 			return nil, err
 		}
@@ -83,30 +83,9 @@ func (e *Entries) List() ([]string, error) {
 }
 
 func (e *Entries) Save() error {
-	// Gob encode the entries
-	file, err := os.OpenFile(constants.SaveFile, os.O_RDWR|os.O_CREATE, 0644)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	encoder := gob.NewEncoder(file)
-	err = encoder.Encode(e)
-	if err != nil {
-		return err
-	}
-	return nil
+	return SaveFile(e, constants.SaveFile)
 }
 
 func (e *Entries) Load() error {
-	file, err := os.Open(constants.SaveFile)
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-	decoder := gob.NewDecoder(file)
-	err = decoder.Decode(e)
-	if err != nil {
-		return err
-	}
-	return nil
+	return LoadFile(e, constants.SaveFile)
 }

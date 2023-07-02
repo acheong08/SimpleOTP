@@ -21,7 +21,8 @@ func TestEntryEncryptDecrypt(t *testing.T) {
 	encrypted := database.Encrypt(entry)
 
 	// Decrypt the encrypted entry
-	decrypted, err := database.Decrypt(encrypted)
+	var decrypted database.Entry = database.Entry{}
+	err := database.Decrypt(encrypted, &decrypted)
 	if err != nil {
 		t.Errorf("Failed to decrypt entry: %v", err)
 	}

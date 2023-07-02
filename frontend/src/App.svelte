@@ -1,28 +1,14 @@
 <script lang="ts">
-  import { Login } from "../wailsjs/go/main/App.js";
-  import { PasswordInput } from "carbon-components-svelte";
+  import Login from "./Login.svelte";
+  import Dashboard from "./Dashboard.svelte";
 
-  let password: string;
-
-  function login(): void {
-    Login(password).then((result) => console.log(password));
-  }
+  let page_state = "login";
 </script>
 
 <main class="">
-  <div class="container mx-auto flex justify-center items-center h-screen">
-    <div class="card shadow-xl place-self-center w-2/3 h-1/2 bg-neutral">
-      <div class="container m-5">
-        <h1 class="text-5xl font-bold my-5">Login</h1>
-        <div class="pr-8">
-          <PasswordInput
-            labelText="Password"
-            placeholder="Enter password..."
-            bind:value={password}
-          />
-        </div>
-        <button class="btn btn-primary my-2" on:click={login}>Submit</button>
-      </div>
-    </div>
-  </div>
+  {#if page_state == "login"}
+    <Login bind:page_state />
+  {:else if page_state == "dashboard"}
+    <Dashboard />
+  {/if}
 </main>

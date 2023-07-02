@@ -3,6 +3,7 @@ package constants
 import "os"
 
 var SaveFile string
+var HashFile string
 
 func init() {
 	// Get home Directory
@@ -17,4 +18,5 @@ func init() {
 	}
 	// Set the save file
 	SaveFile = homeDir + "/.config/SimpleOTP/entries.gob"
+	HashFile = homeDir + "/.config/SimpleOTP/hash.gob"
 }
