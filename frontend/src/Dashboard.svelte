@@ -1,19 +1,13 @@
 <script>
+  import { List } from "../wailsjs/go/main/App.js";
+  import { onMount } from "svelte";
   let searchQuery = "";
-  let cards = [
-    {
-      name: "Card 1",
-      url: "https://example.com/card1",
-      description: "This is the description for Card 1",
-    },
-    {
-      name: "Card 2",
-      url: "https://example.com/card2",
-      description: "This is the description for Card 2",
-    },
-    // Add more cards here...
-  ];
-  let showSettings = false;
+
+  let cards = [];
+
+  onMount(async () => {
+    cards = await List();
+  });
 
   function search() {
     // Perform search logic here
@@ -21,9 +15,11 @@
     console.log("Searching for:", searchQuery);
   }
 
-  function toggleSettings() {
-    showSettings = !showSettings;
+  function addEntryPage() {
+    page_state = "addEntry";
   }
+
+  export let page_state = "dashboard";
 </script>
 
 <div class="p-4 m-auto">
@@ -41,6 +37,14 @@
       Search
     </button>
   </div>
+  <div class="flex justify-end items-center mt-4">
+    <button
+      class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+      on:click={addEntryPage}
+    >
+      +
+    </button>
+  </div>
 </div>
 
 <div class="p-4">
@@ -56,28 +60,3 @@
     </div>
   {/each}
 </div>
-
-<div class="p-4 flex justify-between items-center">
-  <button
-    class="py-2 px-2 focus:outline-none bg-neutral rounded-md hover:bg-primary"
-    on:click={toggleSettings}
-  >
-    {#if showSettings}
-      Hide Settings
-    {:else}
-      Show Settings
-    {/if}
-  </button>
-  <button
-    class="px-4 py-2 focus:outline-none hover:bg-primary bg-neutral"
-    on:click={() => alert("Home button clicked!")}
-  >
-    Home
-  </button>
-</div>
-
-{#if showSettings}
-  <div class="p-4">
-    <!-- Add your settings content here -->
-  </div>
-{/if}

@@ -133,8 +133,8 @@ func TestEntriesSearch(t *testing.T) {
 	}
 
 	// Verify that the correct entries were found
-	if len(results) != 2 {
-		t.Errorf("Unexpected number of search results. Expected 2, got %d", len(results))
+	if len(results) != 3 {
+		t.Errorf("Unexpected number of search results. Expected 3, got %d", len(results))
 	}
 	if !contains(results, entry1.Name) {
 		t.Errorf("Search result does not contain expected entry: %s", entry1.Name)

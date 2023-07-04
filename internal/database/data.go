@@ -19,5 +19,7 @@ func (e *fileStore) Load() error {
 }
 
 var FileStore fileStore = fileStore{
-	Entries: Entries{},
+	Entries: Entries{
+		Entries: make(map[string]string),
+	},
 }

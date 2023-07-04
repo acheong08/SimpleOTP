@@ -17,18 +17,16 @@
   export let page_state = "login";
 </script>
 
-<div class="container mx-auto flex justify-center items-center h-screen">
-  <div class="card shadow-xl place-self-center w-2/3 h-1/2 bg-neutral">
-    <div class="container m-5">
-      <h1 class="text-5xl font-bold my-5">Login</h1>
-      <div class="pr-8">
-        <PasswordInput
-          labelText="Password"
-          placeholder="Enter password..."
-          bind:value={password}
-        />
-      </div>
-      <button class="btn btn-primary my-2" on:click={login}>Submit</button>
+<div class="card place-self-center bg-neutral h-screen w-screen">
+  <div class="container m-5">
+    <h1 class="text-5xl font-bold my-1">Login</h1>
+    <div class="pr-9">
+      <PasswordInput
+        labelText="Password"
+        placeholder="Enter password..."
+        bind:value={password}
+      />
     </div>
+    <button class="btn btn-primary my-2" on:click={login}>Submit</button>
   </div>
 </div>
