@@ -20,6 +20,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	database.FileStore.Load()
 
 }
 
@@ -34,13 +35,15 @@ func (a *App) Login(password string) string {
 
 // Lists all entries in the database
 func (a *App) List() []database.Entry {
-	database.FileStore.Entries.Add(database.Entry{
-		Name:        "Example 2",
-		Description: "Example entry 2",
-		URL:         "https://example.com/login",
-		Secret:      "G7CQJT55IREL6NBWRJI1KLIX332YPTQN",
-	})
 	ret, err := database.FileStore.Entries.List()
+	if err != nil {
+		panic(err)
+	}
+	return ret
+}
+
+func (a *App) Search(query string) []database.Entry {
+	ret, err := database.FileStore.Entries.Search(query)
 	if err != nil {
 		panic(err)
 	}

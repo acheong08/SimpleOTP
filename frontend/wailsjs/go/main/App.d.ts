@@ -7,3 +7,5 @@ export function AddEntry(arg1:database.Entry):Promise<void>;
 export function List():Promise<Array<database.Entry>>;
 
 export function Login(arg1:string):Promise<string>;
+
+export function Search(arg1:string):Promise<Array<database.Entry>>;

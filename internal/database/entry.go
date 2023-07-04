@@ -41,7 +41,7 @@ func (e *Entries) Search(name string) ([]Entry, error) {
 	if err != nil {
 		return nil, err
 	}
-	var matches []Entry
+	var matches []Entry = make([]Entry, 0)
 	for _, n := range names {
 		// Check if name is a substring of n
 		if strings.Contains(strings.ToLower(n.Name), strings.ToLower(name)) ||

@@ -1,5 +1,5 @@
 <script>
-  import { List } from "../wailsjs/go/main/App.js";
+  import { List, Search } from "../wailsjs/go/main/App.js";
   import { onMount } from "svelte";
   let searchQuery = "";
 
@@ -9,10 +9,15 @@
     cards = await List();
   });
 
-  function search() {
-    // Perform search logic here
-    // You can update the 'cards' array based on the search results
-    console.log("Searching for:", searchQuery);
+  async function search() {
+    // Wait for the search query to be updated
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    if (searchQuery == "") {
+      cards = await List();
+      return;
+    }
+    cards = await Search(searchQuery);
+    console.log(cards);
   }
 
   function addEntryPage() {
@@ -29,13 +34,8 @@
       placeholder="Search..."
       class="w-64 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       bind:value={searchQuery}
+      on:input={search}
     />
-    <button
-      class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      on:click={search}
-    >
-      Search
-    </button>
   </div>
   <div class="flex justify-end items-center mt-4">
     <button

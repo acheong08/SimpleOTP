@@ -17,7 +17,7 @@
   export let page_state = "login";
 </script>
 
-<div class="card place-self-center bg-neutral h-screen w-screen">
+<div class="card place-self-center bg-neutral border-0 w-screen min-h-screen">
   <div class="container m-5">
     <h1 class="text-5xl font-bold my-1">Login</h1>
     <div class="pr-9">
