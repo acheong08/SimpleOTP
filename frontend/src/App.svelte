@@ -5,7 +5,7 @@
   let page_state = "login";
 </script>
 
-<main class="">
+<main class="min-h-screen bg-base-100">
   {#if page_state == "login"}
     <Login bind:page_state />
   {:else if page_state == "dashboard"}

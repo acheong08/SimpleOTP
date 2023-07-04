@@ -144,9 +144,9 @@ func TestEntriesSearch(t *testing.T) {
 	}
 }
 
-func contains(slice []string, str string) bool {
+func contains(slice []database.Entry, str string) bool {
 	for _, s := range slice {
-		if s == str {
+		if s.Name == str {
 			return true
 		}
 	}

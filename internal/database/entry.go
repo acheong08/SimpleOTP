@@ -36,15 +36,16 @@ func (e *Entries) Get(name string) (*Entry, error) {
 	return &decryptedEntry, nil
 }
 
-func (e *Entries) Search(name string) ([]string, error) {
+func (e *Entries) Search(name string) ([]Entry, error) {
 	names, err := e.List()
 	if err != nil {
 		return nil, err
 	}
-	var matches []string
+	var matches []Entry
 	for _, n := range names {
 		// Check if name is a substring of n
-		if strings.Contains(strings.ToLower(n), strings.ToLower(name)) {
+		if strings.Contains(strings.ToLower(n.Name), strings.ToLower(name)) ||
+			strings.Contains(strings.ToLower(n.Description), strings.ToLower(name)) {
 			matches = append(matches, n)
 		}
 	}
@@ -66,8 +67,8 @@ func (e *Entries) Remove(name string) {
 	delete(e.Entries, string(hashedName[:]))
 }
 
-func (e *Entries) List() ([]string, error) {
-	names := make([]string, len(e.Entries))
+func (e *Entries) List() ([]Entry, error) {
+	entries := make([]Entry, len(e.Entries))
 	i := 0
 	for _, entry := range e.Entries {
 		var decryptedEntry Entry = Entry{}
@@ -75,9 +76,9 @@ func (e *Entries) List() ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		names[i] = decryptedEntry.Name
+		entries[i] = decryptedEntry
 		i++
 	}
-	return names, nil
+	return entries, nil
 
 }
