@@ -4,6 +4,10 @@ import {database} from '../models';
 
 export function AddEntry(arg1:database.Entry):Promise<void>;
 
+export function DeleteEntry(arg1:string):Promise<void>;
+
+export function GenerateCode(arg1:string):Promise<string>;
+
 export function List():Promise<Array<database.Entry>>;
 
 export function Login(arg1:string):Promise<string>;

@@ -1,5 +1,5 @@
-<script>
-  import { List, Search } from "../wailsjs/go/main/App.js";
+<script lang="ts">
+  import { List, Search, GenerateCode } from "../wailsjs/go/main/App.js";
   import { onMount } from "svelte";
   let searchQuery = "";
 
@@ -20,6 +20,12 @@
     console.log(cards);
   }
 
+  let code = "";
+
+  async function generateCode(name: string) {
+    code = await GenerateCode(name);
+  }
+
   function addEntryPage() {
     page_state = "addEntry";
   }
@@ -28,22 +34,25 @@
 </script>
 
 <div class="p-4 m-auto">
-  <div class="flex justify-between items-center">
-    <input
-      type="text"
-      placeholder="Search..."
-      class="w-64 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-      bind:value={searchQuery}
-      on:input={search}
-    />
-  </div>
-  <div class="flex justify-end items-center mt-4">
-    <button
-      class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
-      on:click={addEntryPage}
-    >
-      +
-    </button>
+  <h2 class="text-5xl font-bold mb-6">SimpleOTP</h2>
+  <div class="flex justify-between">
+    <div class="flex items-center">
+      <input
+        type="text"
+        placeholder="Search..."
+        class="w-64 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        bind:value={searchQuery}
+        on:input={search}
+      />
+    </div>
+    <div class="flex items-center mt-4">
+      <button
+        class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+        on:click={addEntryPage}
+      >
+        +
+      </button>
+    </div>
   </div>
 </div>
 
@@ -58,5 +67,6 @@
       >
       <p>{card.description}</p>
     </div>
+    <!-- A button to generate & show the code -->
   {/each}
 </div>

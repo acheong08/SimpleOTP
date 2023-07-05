@@ -17,16 +17,25 @@
   export let page_state = "login";
 </script>
 
-<div class="card place-self-center bg-neutral border-0 w-screen min-h-screen">
-  <div class="container m-5">
-    <h1 class="text-5xl font-bold my-1">Login</h1>
+<div class="login-container">
+  <div class="max-h-md">
+    <h1 class="text-5xl font-bold mb-6">Login</h1>
     <div class="pr-9">
       <PasswordInput
         labelText="Password"
         placeholder="Enter password..."
         bind:value={password}
+        on:change={login}
       />
     </div>
-    <button class="btn btn-primary my-2" on:click={login}>Submit</button>
+    <button class="btn btn-primary mt-4" on:click={login}>Submit</button>
   </div>
 </div>
+
+<style>
+  .login-container {
+    max-width: 30rem;
+    margin: auto;
+    margin-top: 4rem; /* Adjust the value to increase or decrease the top margin */
+  }
+</style>

@@ -2,10 +2,14 @@ module github.com/acheong08/SimpleOTP
 
 go 1.20
 
-require github.com/wailsapp/wails/v2 v2.5.1
+require (
+	github.com/pquerna/otp v1.4.0
+	github.com/wailsapp/wails/v2 v2.5.1
+)
 
 require (
 	github.com/bep/debounce v1.2.1 // indirect
+	github.com/boombuler/barcode v1.0.1-0.20190219062509-6c824513bacc // indirect
 	github.com/go-ole/go-ole v1.2.6 // indirect
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/jchv/go-winloader v0.0.0-20210711035445-715c2860da7e // indirect

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/acheong08/SimpleOTP/internal/database"
+	"github.com/acheong08/SimpleOTP/internal/totp"
 )
 
 // App struct
@@ -53,4 +54,16 @@ func (a *App) Search(query string) []database.Entry {
 // Adds a new entry to the database
 func (a *App) AddEntry(entry database.Entry) {
 	database.FileStore.Entries.Add(entry)
+}
+
+func (a *App) DeleteEntry(name string) {
+	database.FileStore.Entries.Remove(name)
+}
+
+func (a *App) GenerateCode(name string) (string, error) {
+	entry, err := database.FileStore.Entries.Get(name)
+	if err != nil {
+		panic(err)
+	}
+	return totp.GetCode(entry.Secret)
 }

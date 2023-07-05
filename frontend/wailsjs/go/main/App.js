@@ -6,6 +6,14 @@ export function AddEntry(arg1) {
   return window['go']['main']['App']['AddEntry'](arg1);
 }
 
+export function DeleteEntry(arg1) {
+  return window['go']['main']['App']['DeleteEntry'](arg1);
+}
+
+export function GenerateCode(arg1) {
+  return window['go']['main']['App']['GenerateCode'](arg1);
+}
+
 export function List() {
   return window['go']['main']['App']['List']();
 }
