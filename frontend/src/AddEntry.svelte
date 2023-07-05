@@ -12,6 +12,7 @@
     // Reset the entry form
     entry = new database.Entry();
     page_state = "dashboard";
+    SaveState();
   }
 </script>
 
