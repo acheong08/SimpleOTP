@@ -1,5 +1,11 @@
 <script lang="ts">
-  import { List, Search, GenerateCode } from "../wailsjs/go/main/App.js";
+  import {
+    List,
+    Search,
+    GenerateCode,
+    DeleteEntry,
+    SaveState,
+  } from "../wailsjs/go/main/App.js";
   import { onMount } from "svelte";
 
   let searchQuery = "";
@@ -35,6 +41,12 @@
     }, 10000);
   }
 
+  async function deleteEntry(name: string) {
+    await DeleteEntry(name);
+    cards = await List();
+    SaveState();
+  }
+
   function addEntryPage() {
     page_state = "addEntry";
   }
@@ -64,11 +76,32 @@
     </div>
   </div>
 </div>
-
 <div class="p-4">
   {#each cards as card}
-    <div class="mb-4 shadow-md p-4 card bg-neutral">
-      <h3 class="text-lg font-bold mb-2">{card.name}</h3>
+    <div class="mb-4 shadow-md p-4 card bg-neutral justify-between">
+      <div class="flex">
+        <h3 class="flex text-lg font-bold mb-2">{card.name}</h3>
+        <div
+          class="badge badge-error gap-1 flex justify ml-9"
+          on:click={() => {
+            deleteEntry(card.name);
+          }}
+          on:keypress={() => {}}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="inline-block w-4 h-4 stroke-current"
+            ><path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            /></svg
+          > delete
+        </div>
+      </div>
       <a
         href={card.url}
         target="_blank"
