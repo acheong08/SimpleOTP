@@ -42,6 +42,9 @@
   }
 
   async function deleteEntry(name: string) {
+    // Alert the user before deleting
+    const confirm = window.confirm(`Are you sure you want to delete ${name}?`);
+    if (!confirm) return;
     await DeleteEntry(name);
     cards = await List();
     SaveState();
