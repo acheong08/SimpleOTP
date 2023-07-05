@@ -1,8 +1,8 @@
 <script lang="ts">
   import { List, Search, GenerateCode } from "../wailsjs/go/main/App.js";
   import { onMount } from "svelte";
-  let searchQuery = "";
 
+  let searchQuery = "";
   let cards = [];
 
   onMount(async () => {
@@ -12,7 +12,7 @@
   async function search() {
     // Wait for the search query to be updated
     await new Promise((resolve) => setTimeout(resolve, 0));
-    if (searchQuery == "") {
+    if (searchQuery === "") {
       cards = await List();
       return;
     }
@@ -20,10 +20,19 @@
     console.log(cards);
   }
 
-  let code = "";
+  async function generateCode(name: string, event) {
+    const div = event.target;
+    const code = await GenerateCode(name);
 
-  async function generateCode(name: string) {
-    code = await GenerateCode(name);
+    // Show the code in pre and hide the button
+    div.nextElementSibling.textContent = code;
+    div.nextElementSibling.style.display = "block";
+    div.style.display = "none";
+
+    setInterval(() => {
+      div.nextElementSibling.style.display = "none";
+      div.style.display = "block";
+    }, 10000);
   }
 
   function addEntryPage() {
@@ -66,7 +75,20 @@
         class="text-blue-500 hover:underline mb-2">{card.url}</a
       >
       <p>{card.description}</p>
+
+      <!-- A button to generate & show the code -->
+      <div class="flex m-2 justify-center">
+        <button
+          class="flex bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2"
+          on:click={(event) => generateCode(card.name, event)}
+        >
+          Generate Code
+        </button>
+        <pre
+          style="display:none;"
+          class="flex bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 p-2 selection:bg-warning"
+        />
+      </div>
     </div>
-    <!-- A button to generate & show the code -->
   {/each}
 </div>

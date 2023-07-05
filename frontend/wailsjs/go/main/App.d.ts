@@ -12,4 +12,6 @@ export function List():Promise<Array<database.Entry>>;
 
 export function Login(arg1:string):Promise<string>;
 
+export function SaveState():Promise<void>;
+
 export function Search(arg1:string):Promise<Array<database.Entry>>;

@@ -22,6 +22,10 @@ export function Login(arg1) {
   return window['go']['main']['App']['Login'](arg1);
 }
 
+export function SaveState() {
+  return window['go']['main']['App']['SaveState']();
+}
+
 export function Search(arg1) {
   return window['go']['main']['App']['Search'](arg1);
 }

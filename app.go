@@ -60,10 +60,18 @@ func (a *App) DeleteEntry(name string) {
 	database.FileStore.Entries.Remove(name)
 }
 
-func (a *App) GenerateCode(name string) (string, error) {
+func (a *App) GenerateCode(name string) string {
 	entry, err := database.FileStore.Entries.Get(name)
 	if err != nil {
-		panic(err)
+		return ""
 	}
-	return totp.GetCode(entry.Secret)
+	code, err := totp.GetCode(entry.Secret)
+	if err != nil {
+		return ""
+	}
+	return code
+}
+
+func (a *App) SaveState() {
+	database.FileStore.Save()
 }

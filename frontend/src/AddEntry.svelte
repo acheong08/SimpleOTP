@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AddEntry } from "../wailsjs/go/main/App.js";
+  import { AddEntry, SaveState } from "../wailsjs/go/main/App.js";
   import { database } from "../wailsjs/go/models.js";
 
   export let page_state = "addEntry";
@@ -11,6 +11,7 @@
     AddEntry(entry);
     // Reset the entry form
     entry = new database.Entry();
+    page_state = "dashboard";
   }
 </script>
 
