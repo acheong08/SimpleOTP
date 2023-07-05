@@ -23,7 +23,7 @@ jobs:
     
     - name: Set up Wails
       run: |
-        sudo apt install npm libgtk-3-0 gcc
+        sudo apt install npm libwebkit2gtk-4.0-dev libgtk-3-dev build-essential
         go install github.com/wailsapp/wails/v2/cmd/wails@latest
         wails doctor
 
