@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"os"
 
 	customerrors "github.com/acheong08/SimpleOTP/internal/errors"
@@ -102,6 +103,7 @@ func SaveFile(obj any, filePath string) error {
 func LoadFile(obj any, filePath string) error {
 	file, err := os.Open(filePath)
 	if err != nil {
+		log.Println(filePath)
 		return errors.New(customerrors.FILENOTEXIST)
 	}
 	defer file.Close()

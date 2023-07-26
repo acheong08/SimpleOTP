@@ -21,8 +21,10 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	database.FileStore.Load()
-
+	err := database.FileStore.Load()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (a *App) shutdown(ctx context.Context) {
