@@ -13,8 +13,6 @@ import (
 	"io"
 	"log"
 	"os"
-
-	customerrors "github.com/acheong08/SimpleOTP/internal/errors"
 )
 
 // Marshals the JSON, encrypts it, and returns a base64 encoded string
@@ -104,7 +102,15 @@ func LoadFile(obj any, filePath string) error {
 	file, err := os.Open(filePath)
 	if err != nil {
 		log.Println(filePath)
-		return errors.New(customerrors.FILENOTEXIST)
+		if err == os.ErrNotExist {
+			// Create the file
+			file, err = os.Create(filePath)
+			if err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
 	}
 	defer file.Close()
 	decoder := gob.NewDecoder(file)
