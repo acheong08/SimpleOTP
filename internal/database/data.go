@@ -15,7 +15,12 @@ func (e *fileStore) Save() error {
 }
 
 func (e *fileStore) Load() error {
-	return utilities.LoadFile(e, constants.SaveFile)
+	err := utilities.LoadFile(e, constants.SaveFile)
+	if err != nil {
+		e = &fileStore{}
+	}
+	return nil
+
 }
 
 var FileStore fileStore = fileStore{
